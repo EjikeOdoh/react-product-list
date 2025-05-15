@@ -269,7 +269,7 @@ dialog {
 }
 
 dialog::backdrop {
-  background-color: black;
+  background-color: rgba(0,0,0,0.5);
 }
 
 .dialog {
@@ -312,8 +312,6 @@ dialog::backdrop {
   border-radius: 5px;
   overflow: hidden;
 }
-
-
 
 
 @media screen and (max-width: 990px) {

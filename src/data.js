@@ -45,7 +45,7 @@ export default [
         },
         "name": "Macaron Mix of Five",
         "category": "Macaron",
-        "price": 8.00
+        "price": 8.00,
      },
      {
         "image": {
