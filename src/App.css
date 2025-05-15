@@ -12,7 +12,7 @@ main {
   display: grid;
   grid-template-columns: 5fr 3fr;
   gap: 40px;
-
+  position: relative;
 }
 
 .card-container {
@@ -260,6 +260,7 @@ dialog {
   padding: 0;
   border-radius: 10px;
   overflow: hidden;
+  background-color: transparent;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -277,18 +278,13 @@ dialog::backdrop {
   padding: 30px;
   margin: auto;
   background-color: white;
-}
-
-.confirm-img {
-  width: 50px;
+  margin-top: 50%;
+  transform: translateY(-50%);
+  border-radius: 20px;
 }
 
 .confirm-text {
   margin-block: 30px;
-}
-
-.confirm-text h1 {
-  font-family: 'New Red Bold', sans-serif;
 }
 
 .confirm-text p {
@@ -304,6 +300,11 @@ dialog::backdrop {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.modal-cart-items .item-cost {
+  color: var(--rose-900);
+  font-size: 1.1rem;
 }
 
 .thumbnail {

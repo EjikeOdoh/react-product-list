@@ -3,8 +3,10 @@ import './App.css'
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 import Cake from "./assets/images/image-cake-desktop.jpg"
+import CakeThumbnail from "./assets/images/image-cake-thumbnail.jpg"
 import Empty from './assets/images/illustration-empty-cart.svg'
 import CarbonNeutral from './assets/images/icon-carbon-neutral.svg'
 
@@ -62,7 +64,7 @@ function CartItem(props) {
         </div>
       </div>
       <button>
-       <IoMdClose size={20} />
+        <IoMdClose size={20} />
       </button>
 
     </div>
@@ -83,67 +85,67 @@ function EmptyCart(props) {
 function CartTotal(props) {
   return (
     <div className="cart-item-total">
-    <div className="order-total">
-      <p>Order Total</p>
-      <p className="total-cost">
-        $46.50
-      </p>
+      <div className="order-total">
+        <p>Order Total</p>
+        <p className="total-cost">
+          $46.50
+        </p>
+      </div>
+      <div className="carbon-neutral">
+        <img src={CarbonNeutral} />
+        <p>This is a <span className="notice">carbon-neutral</span> delivery</p>
+      </div>
+      <button>
+        Confirm Order
+      </button>
     </div>
-    <div className="carbon-neutral">
-      <img src={CarbonNeutral} />
-      <p>This is a <span className="notice">carbon-neutral</span> delivery</p>
-    </div>
-    <button>
-      Confirm Order
-    </button>
-  </div>
   )
 }
 
 function Modal(props) {
 
   return (
-  
+
     <dialog open={true}>
-      <div class="dialog">
-        <img class="confirm-img" src="./assets/images/icon-order-confirmed.svg" />
-        <div class="confirm-text">
+      <div className="dialog">
+        <FaRegCheckCircle size={50} color='var(--green)' />
+        <div className="confirm-text">
           <h1>Order Confirmed</h1>
           <p>We hope you enjoy your food</p>
         </div>
-        <div class="modal-cart-items" id="modal-cart-items">
-          <div class="cart-item">
-            <div class="left">
-              <div class="thumbnail">
-                <img src="./assets/images/image-baklava-thumbnail.jpg" />
+        <div className="modal-cart-items">
+          <div className="cart-item">
+            <div className="left">
+              <div className="thumbnail">
+                <img src={CakeThumbnail} />
               </div>
-              <div class="cart-item-desc">
+              <div className="cart-item-desc">
                 <h3>Classic Tiramisu</h3>
-                <div class="item-desc">
-                  <p class="item-qty">
+                <div className="item-desc">
+                  <p className="item-qty">
                     1x
                   </p>
-                  <p class="item-price">
+                  <p className="item-price">
                     @ $6.50
                   </p>
-  
+
                 </div>
               </div>
             </div>
-            <p class="item-cost">
+            <p className="item-cost">
               $13.00
             </p>
           </div>
         </div>
-        <div class="cart-item-total">
-          <div class="order-total">
+        <div className="cart-item-total">
+          <div className="order-total">
             <p>Order Total</p>
-            <p class="total-cost">
-              $<span id="modal-total">46.50</span>
+            <p className="total-cost">
+              $46.50
             </p>
           </div>
-  
-          <button onclick="startNewOrder()">
+
+          <button>
             Start New Order
           </button>
         </div>
@@ -167,7 +169,7 @@ function App() {
       <section className="cart-container">
         <h2>Your Cart (<span id="cart-item-total">7</span>)</h2>
 
-      <EmptyCart />
+        <EmptyCart />
 
         <div>
           <CartItem />
