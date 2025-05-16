@@ -1,184 +1,26 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useReducer} from 'react'
 import './App.css'
-import { FaMinus, FaPlus } from "react-icons/fa";
-import { MdOutlineAddShoppingCart } from "react-icons/md";
-import { IoMdClose } from "react-icons/io";
-import { FaRegCheckCircle } from "react-icons/fa";
 
-import CakeThumbnail from "./assets/images/image-cake-thumbnail.jpg"
-import Empty from './assets/images/illustration-empty-cart.svg'
-import CarbonNeutral from './assets/images/icon-carbon-neutral.svg'
 import rawData from './data'
 
+// Components
+import Card from './components/Card'
+import CartItem from './components/CartItem';
+import EmptyCart from './components/EmptyCart';
+import CartTotal from './components/CartTotal';
+import Modal from './components/Modal'
 
-function Card(props) {
-  return (
-    <div className="card">
-      <div className={`card-img ${props.isActive ? 'active' : undefined}`}>
-        <img src={props.imageSource} alt={props.desc} />
-      </div>
-      <div className="card-det">
-        <div className="card-btn">
-          {
-            props.isActive ?
-              <div className="counter-container">
-                <button onClick={() => props.handleDecrease(props.id)}>
-                  <FaMinus size={14} />
-                </button>
-                <span className="qty">{props.qty}</span>
-                <button onClick={() => props.handleIncrease(props.id)}>
-                  <FaPlus size={14} />
-                </button>
-              </div> :
-              <button onClick={() => props.handleAddToCart(props.id)} className="add-btn">
-                <MdOutlineAddShoppingCart size={24} />
-                Add to Cart
-              </button>
-          }
-
-        </div>
-        <p className="name">{props.name}</p>
-        <p className="desc">{props.desc}</p>
-        <p className="price">${props.price}</p>
-      </div>
-    </div>
-  )
-}
-
-function CartItem(props) {
-  return (
-    <div className="cart-item">
-      <div className="cart-item-desc">
-        <h3>{props.name}</h3>
-        <div className="item-desc">
-          <p className="item-qty">
-            {props.qty}x
-          </p>
-          <p className="item-price">
-            @ ${props.price}
-          </p>
-          <p className="item-cost">
-            ${props.total}
-          </p>
-        </div>
-      </div>
-      <button onClick={()=>props.handleRemoveFromCart(props.id)}>
-        <IoMdClose size={20} />
-      </button>
-
-    </div>
-  )
-}
-
-function EmptyCart(props) {
-  return (
-    <div className="no-item-container">
-      <div className="empty-cart-img">
-        <img src={Empty} />
-      </div>
-      <p>Your added items will appear here</p>
-    </div>
-  )
-}
-
-function CartTotal(props) {
-  return (
-    <div className="cart-item-total">
-      <div className="order-total">
-        <p>Order Total</p>
-        <p className="total-cost">
-          ${props.totalCost.toFixed(2)}
-        </p>
-      </div>
-      <div className="carbon-neutral">
-        <img src={CarbonNeutral} />
-        <p>This is a <span className="notice">carbon-neutral</span> delivery</p>
-      </div>
-      <button onClick={props.popup}>
-        Confirm Order
-      </button>
-    </div>
-  )
-}
-
-function ModalCartItem(props) {
-  return (
-    <div className="cart-item">
-    <div className="left">
-      <div className="thumbnail">
-        <img src={props.thumbnail} />
-      </div>
-      <div className="cart-item-desc">
-        <h3>{props.name}</h3>
-        <div className="item-desc">
-          <p className="item-qty">
-            {props.qty}x
-          </p>
-          <p className="item-price">
-            @ ${props.price}
-          </p>
-
-        </div>
-      </div>
-    </div>
-    <p className="item-cost">
-      ${props.itemTotal}
-    </p>
-  </div>
-  )
-}
-
-function Modal(props) {
-
-  const items =  props.data.map(item=>{
-    console.log(item)
-    return (
-    <ModalCartItem
-    thumbnail={item.image.thumbnail}
-      name={item.category}
-      qty={item.quantity}
-      price={item.price.toFixed(2)}
-      itemTotal={(item.price*item.quantity).toFixed(2)}
-    />)
-  })
-
-  return (
-    <dialog ref={props.target} open={props.isOpen}>
-      <div className="dialog">
-        <FaRegCheckCircle size={50} color='var(--green)' />
-        <div className="confirm-text">
-          <h1>Order Confirmed</h1>
-          <p>We hope you enjoy your food</p>
-        </div>
-        <div className="modal-cart-items">
-         {items}
-        </div>
-        <div className="cart-item-total">
-          <div className="order-total">
-            <p>Order Total</p>
-            <p className="total-cost">
-              ${props.total}
-            </p>
-          </div>
-
-          <button onClick={props.close}>
-            Start New Order
-          </button>
-        </div>
-      </div>
-    </dialog>
-  )
-}
+// reducers
+import cartReducer from './reducers/CartReducer';
 
 function App() {
 
   const dialogRef = useRef(null)
-
-  const [foodList, setFoodList] = useState(rawData.map((x, i) => {
+  const [foodList, dispatch] = useReducer(cartReducer, rawData.map((x, i) => {
     return { ...x, isSelected: false, id: i + 1, quantity: 1 }
   }))
-  const [isOpen, setIsOpen] = useState(false)
 
+  const [isOpen, setIsOpen] = useState(false)
   const handleOpen=() => {
     setIsOpen(true)
     dialogRef.current.showModal()
@@ -191,54 +33,31 @@ function App() {
 
 
   const addToCart = (id) => {
-    setFoodList(prev => {
-      return prev.map(x => {
-        if (x.id === id) {
-          return { ...x, isSelected: true }
-        } else {
-          return x
-        }
-      })
+    dispatch({
+      type: 'add',
+      id: id
     })
   }
 
   const increaseCount = (id) => {
-    setFoodList(prev => {
-      return prev.map(x => {
-        if (x.id === id) {
-          return { ...x, quantity: x.quantity + 1 }
-        } else {
-          return x
-        }
-      })
+    dispatch({
+      type:'increase',
+      id: id
     })
   }
 
   const decreaseCount = (id) => {
-    setFoodList(prev => {
-      return prev.map(x => {
-        if (x.id === id) {
-          if (x.quantity <= 1) {
-            return { ...x, isSelected: false }
-          } else {
-            return { ...x, quantity: x.quantity - 1 }
-          }
-        } else {
-          return x
-        }
-      })
+    dispatch({
+      type:'decrease',
+      id: id
     })
   }
 
   const removeFromCart =(id) => {
-    setFoodList(prev => {
-      return prev.map(x => {
-        if (x.id === id) {
-          return { ...x, isSelected: false, quantity: 1 }
-        } else {
-          return x
-        }
-      })
+
+    dispatch({
+      type:'remove',
+      id: id
     })
   }
 
@@ -292,7 +111,6 @@ function App() {
       </section>
       <section className="cart-container">
         <h2>Your Cart ({totalItems})</h2>
-
         {
           cartItems.length === 0 ? <EmptyCart /> : (
             <>
@@ -301,12 +119,8 @@ function App() {
               </div>
               <CartTotal popup={handleOpen} totalCost={totalCost} />
             </>
-
           )
         }
-
-
-
       </section>
 
       <Modal target={dialogRef} data={cartItems} total={totalCost.toFixed(2)} isOpen={isOpen} close={handleClose} />
