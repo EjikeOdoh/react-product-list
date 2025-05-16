@@ -274,7 +274,7 @@ dialog::backdrop {
 
 .dialog {
   width: 40rem;
-  height: fit-content;
+  /* height: fit-content; */
   padding: 30px;
   margin: auto;
   background-color: white;
